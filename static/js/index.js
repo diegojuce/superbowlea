@@ -57,18 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
       })
         .then(response => {
           if (!response.ok) {
-            throw new Error('Error al agregar equipo');
+            // Manejar errores desde el servidor
+            return response.text().then(errorMsg => {
+              throw new Error(errorMsg);
+            });
           }
           return response.text();
         })
         .then(() => {
           alert('Equipo agregado correctamente.');
-          cargarEquipos(); // Recargar la tabla con los nuevos datos
+          cargarEquipos(); // Recargar la tabla
           addTeamForm.reset(); // Limpiar el formulario
         })
         .catch(err => {
           console.error('Error al agregar equipo:', err);
-          alert('Hubo un error al agregar el equipo. Inténtalo de nuevo.');
+          alert(err.message || 'Hubo un error al agregar el equipo. Inténtalo de nuevo.');
         });
     });
   });

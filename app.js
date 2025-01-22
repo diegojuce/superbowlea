@@ -65,7 +65,7 @@ app.get('/api/equipos', (req, res) => {
   });
 });
 
-// Ruta para agregar un nuevo equipo
+// Ruta para agregar equipo
 app.post('/agregar_equipo', (req, res) => {
   const { nombre_equipo } = req.body;
 
@@ -75,16 +75,17 @@ app.post('/agregar_equipo', (req, res) => {
     return;
   }
 
-  // Insertar equipo en la base de datos
+  // Insertar el equipo en la base de datos
   db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre_equipo], (err) => {
     if (err) {
-      console.error("Error agregando equipo:", err);
-      res.status(500).send("Error interno del servidor");
+      console.error('Error agregando equipo:', err);
+      res.status(500).send('Error interno del servidor');
       return;
     }
-    res.redirect('/');
+    res.status(200).send('Equipo agregado correctamente');
   });
 });
+
 
 
 // Editar nombre
