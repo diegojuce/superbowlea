@@ -151,6 +151,74 @@ app.get('/api/historial', (req, res) => {
   });
 });
 
+// Restar yardas
+app.post('/restar_yardas', (req, res) => {
+  const { equipo_id, yardas } = req.body;
+
+  db.query(`SELECT yardas FROM equipos WHERE id = ?`, [equipo_id], (err, results) => {
+    if (err || results.length === 0) {
+      console.error("Error obteniendo yardas:", err);
+      res.status(400).send("Equipo no encontrado");
+      return;
+    }
+
+    const actualYardas = results[0].yardas;
+    const nuevaYarda = Math.max(actualYardas - yardas, 0);
+
+    db.query(`UPDATE equipos SET yardas = ? WHERE id = ?`, [nuevaYarda, equipo_id], (updateErr) => {
+      if (updateErr) {
+        console.error("Error actualizando equipo:", updateErr);
+        res.status(500).send("Error interno del servidor");
+        return;
+      }
+
+      db.query(`INSERT INTO historial (equipo_id, yardas, puntos, fecha) VALUES (?, ?, 0, NOW())`,
+        [equipo_id, -yardas], (histErr) => {
+          if (histErr) {
+            console.error("Error registrando historial:", histErr);
+            res.status(500).send("Error interno del servidor");
+            return;
+          }
+          res.redirect('/historial');
+        });
+    });
+  });
+});
+
+// Restar puntos
+app.post('/restar_puntos', (req, res) => {
+  const { equipo_id, puntos } = req.body;
+
+  db.query(`SELECT puntos FROM equipos WHERE id = ?`, [equipo_id], (err, results) => {
+    if (err || results.length === 0) {
+      console.error("Error obteniendo puntos:", err);
+      res.status(400).send("Equipo no encontrado");
+      return;
+    }
+
+    const actualPuntos = results[0].puntos;
+    const nuevosPuntos = Math.max(actualPuntos - puntos, 0);
+
+    db.query(`UPDATE equipos SET puntos = ? WHERE id = ?`, [nuevosPuntos, equipo_id], (updateErr) => {
+      if (updateErr) {
+        console.error("Error actualizando equipo:", updateErr);
+        res.status(500).send("Error interno del servidor");
+        return;
+      }
+
+      db.query(`INSERT INTO historial (equipo_id, yardas, puntos, fecha) VALUES (?, 0, ?, NOW())`,
+        [equipo_id, -puntos], (histErr) => {
+          if (histErr) {
+            console.error("Error registrando historial:", histErr);
+            res.status(500).send("Error interno del servidor");
+            return;
+          }
+          res.redirect('/historial');
+        });
+    });
+  });
+});
+
 // Ruta del historial
 app.get('/historial', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));

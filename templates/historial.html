@@ -25,6 +25,56 @@
       </tbody>
     </table>
 
+    <!-- Tabla de acciones -->
+    <h2>Acciones</h2>
+    <table class="responsive-table">
+      <thead>
+        <tr>
+          <th>Equipo</th>
+          <th>Acción</th>
+          <th>Valor</th>
+          <th>Aplicar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Restar Yardas -->
+        <tr>
+          <form action="/restar_yardas" method="POST">
+            <td>
+              <select name="equipo_id" id="equipo-select-yardas" required>
+                <option value="" disabled selected>Seleccionar equipo</option>
+              </select>
+            </td>
+            <td>Restar Yardas</td>
+            <td>
+              <input type="number" name="yardas" value="5" step="5" min="0" required>
+            </td>
+            <td>
+              <button type="submit">Aplicar</button>
+            </td>
+          </form>
+        </tr>
+
+        <!-- Restar Puntos -->
+        <tr>
+          <form action="/restar_puntos" method="POST">
+            <td>
+              <select name="equipo_id" id="equipo-select-puntos" required>
+                <option value="" disabled selected>Seleccionar equipo</option>
+              </select>
+            </td>
+            <td>Restar Puntos</td>
+            <td>
+              <input type="number" name="puntos" value="7" step="7" min="0" required>
+            </td>
+            <td>
+              <button type="submit">Aplicar</button>
+            </td>
+          </form>
+        </tr>
+      </tbody>
+    </table>
+
     <!-- Volver a la página principal -->
     <a href="/" class="button-link">Volver</a>
   </div>
