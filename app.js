@@ -46,14 +46,13 @@ const initDB = () => {
     )
   `);
 
-  // Inserta 5 equipos si no existen
   db.query(`SELECT COUNT(*) AS count FROM equipos`, (err, results) => {
     if (err) {
       console.error("Error inicializando la base de datos:", err);
       return;
     }
-    if (results[0].count === 0) {
-      const equipos = ["Equipo 1", "Equipo 2", "Equipo 3", "Equipo 4", "Equipo 5"];
+    if (results[0].count < 5) {
+      const equipos = Array.from({ length: 5 - results[0].count }, (_, i) => `Equipo ${results[0].count + i + 1}`);
       equipos.forEach(nombre => {
         db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre]);
       });
@@ -76,6 +75,20 @@ app.get('/api/equipos', (req, res) => {
     } else {
       res.json(equipos);
     }
+  });
+});
+
+// Editar nombre del equipo
+app.post('/editar_nombre', (req, res) => {
+  const { equipo_id, nuevo_nombre } = req.body;
+
+  db.query(`UPDATE equipos SET nombre = ? WHERE id = ?`, [nuevo_nombre, equipo_id], (err) => {
+    if (err) {
+      console.error("Error actualizando nombre del equipo:", err);
+      res.status(500).send("Error interno del servidor");
+      return;
+    }
+    res.redirect('/');
   });
 });
 
@@ -143,75 +156,8 @@ app.get('/historial', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));
 });
 
-// Restar yardas
-app.post('/restar_yardas', (req, res) => {
-  const { equipo_id, yardas } = req.body;
-
-  db.query(`SELECT yardas FROM equipos WHERE id = ?`, [equipo_id], (err, results) => {
-    if (err || results.length === 0) {
-      console.error("Error obteniendo yardas:", err);
-      res.status(400).send("Equipo no encontrado");
-      return;
-    }
-
-    const actualYardas = results[0].yardas;
-    const nuevaYarda = Math.max(actualYardas - yardas, 0);
-
-    db.query(`UPDATE equipos SET yardas = ? WHERE id = ?`, [nuevaYarda, equipo_id], (updateErr) => {
-      if (updateErr) {
-        console.error("Error actualizando equipo:", updateErr);
-        res.status(500).send("Error interno del servidor");
-        return;
-      }
-
-      db.query(`INSERT INTO historial (equipo_id, yardas, puntos, fecha) VALUES (?, ?, 0, NOW())`,
-        [equipo_id, -yardas], (histErr) => {
-          if (histErr) {
-            console.error("Error registrando historial:", histErr);
-            res.status(500).send("Error interno del servidor");
-            return;
-          }
-          res.redirect('/historial');
-        });
-    });
-  });
-});
-
-// Restar puntos
-app.post('/restar_puntos', (req, res) => {
-  const { equipo_id, puntos } = req.body;
-
-  db.query(`SELECT puntos FROM equipos WHERE id = ?`, [equipo_id], (err, results) => {
-    if (err || results.length === 0) {
-      console.error("Error obteniendo puntos:", err);
-      res.status(400).send("Equipo no encontrado");
-      return;
-    }
-
-    const actualPuntos = results[0].puntos;
-    const nuevosPuntos = Math.max(actualPuntos - puntos, 0);
-
-    db.query(`UPDATE equipos SET puntos = ? WHERE id = ?`, [nuevosPuntos, equipo_id], (updateErr) => {
-      if (updateErr) {
-        console.error("Error actualizando equipo:", updateErr);
-        res.status(500).send("Error interno del servidor");
-        return;
-      }
-
-      db.query(`INSERT INTO historial (equipo_id, yardas, puntos, fecha) VALUES (?, 0, ?, NOW())`,
-        [equipo_id, -puntos], (histErr) => {
-          if (histErr) {
-            console.error("Error registrando historial:", histErr);
-            res.status(500).send("Error interno del servidor");
-            return;
-          }
-          res.redirect('/historial');
-        });
-    });
-  });
-});
-
 // Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
