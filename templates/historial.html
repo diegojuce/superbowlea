@@ -7,7 +7,21 @@
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div class="container">
+    <h1>Historial</h1>
+    <table id="history-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Equipo</th>
+          <th>Yardas</th>
+          <th>Puntos</th>
+        </tr>
+      </thead>
+      <tbody id="history-body"></tbody>
+    </table>
+    <a href="/" class="volver">Volver</a>
+  </div>
   <script src="/static/js/historial.js"></script>
 </body>
 </html>
