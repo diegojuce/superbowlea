@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
     <div class="container">
@@ -44,8 +44,8 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Formulario para restar yardas -->
                 <tr>
-                    <!-- Formulario para restar yardas -->
                     <form action="/restar_yardas" method="POST">
                         <td>
                             <select name="equipo_id" required>
@@ -57,15 +57,15 @@
                         </td>
                         <td>Restar Yardas</td>
                         <td>
-                            <input type="number" name="yardas" value="5" step="5" required>
+                            <input type="number" name="yardas" value="5" step="5" min="0" required>
                         </td>
                         <td>
-                            <button type="submit">Aplicar</button>
+                            <button type="submit" title="Restar yardas al equipo seleccionado">Aplicar</button>
                         </td>
                     </form>
                 </tr>
+                <!-- Formulario para restar puntos -->
                 <tr>
-                    <!-- Formulario para restar puntos -->
                     <form action="/restar_puntos" method="POST">
                         <td>
                             <select name="equipo_id" required>
@@ -77,10 +77,10 @@
                         </td>
                         <td>Restar Puntos</td>
                         <td>
-                            <input type="number" name="puntos" value="7" step="7" required>
+                            <input type="number" name="puntos" value="7" step="7" min="0" required>
                         </td>
                         <td>
-                            <button type="submit">Aplicar</button>
+                            <button type="submit" title="Restar puntos al equipo seleccionado">Aplicar</button>
                         </td>
                     </form>
                 </tr>
@@ -88,7 +88,7 @@
         </table>
 
         <!-- Volver a la página principal -->
-        <a href="/" class="volver">Volver</a>
+        <a href="/" class="volver" title="Regresar a la página principal">Volver</a>
     </div>
 </body>
 </html>

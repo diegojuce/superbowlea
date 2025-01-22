@@ -15,8 +15,8 @@ const PORT = 3030;
 // Configurar conexión a MySQL
 const db = mysql.createPool({
   host: DB_HOST,
-  user: DB_USER, // Cambiar según tu usuario
-  password: DB_PASSWORD, // Cambiar según tu contraseña
+  user: DB_USER,
+  password: DB_PASSWORD,
   database: DB_NAME,
   port: DB_PORT,
 });
@@ -59,7 +59,7 @@ const initDB = () => {
 
 initDB();
 
-// Ruta principal
+// Rutas principales
 app.get('/', (req, res) => {
   db.query(`SELECT * FROM equipos`, (err, equipos) => {
     if (err) {
@@ -67,11 +67,10 @@ app.get('/', (req, res) => {
       res.status(500).send("Error interno del servidor");
       return;
     }
-    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'templates', 'index.html'));
   });
 });
 
-// Ruta para sumar yardas
 app.post('/sumar', (req, res) => {
   const { equipo_id, yardas } = req.body;
 
@@ -113,7 +112,7 @@ app.post('/sumar', (req, res) => {
   });
 });
 
-// Ruta para editar el nombre del equipo
+// Rutas adicionales
 app.post('/editar_nombre', (req, res) => {
   const { equipo_id, nuevo_nombre } = req.body;
 
@@ -127,7 +126,6 @@ app.post('/editar_nombre', (req, res) => {
   });
 });
 
-// Ruta para agregar un nuevo equipo
 app.post('/agregar_equipo', (req, res) => {
   const { nombre_equipo } = req.body;
 
@@ -141,7 +139,6 @@ app.post('/agregar_equipo', (req, res) => {
   });
 });
 
-// Ruta para eliminar un equipo
 app.post('/eliminar_equipo/:equipo_id', (req, res) => {
   const { equipo_id } = req.params;
 
@@ -155,7 +152,6 @@ app.post('/eliminar_equipo/:equipo_id', (req, res) => {
   });
 });
 
-// Ruta para ver el historial
 app.get('/historial', (req, res) => {
   db.query(`SELECT historial.fecha, equipos.nombre, historial.yardas, historial.puntos
             FROM historial
@@ -173,7 +169,7 @@ app.get('/historial', (req, res) => {
         res.status(500).send("Error interno del servidor");
         return;
       }
-      res.sendFile(path.join(__dirname, 'templates', 'historial.html'));
+      res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));
     });
   });
 });

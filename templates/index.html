@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superbowl EA 24-25</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
     <div class="container">
@@ -22,38 +22,45 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Renderización dinámica de equipos -->
                 {% for equipo in equipos %}
                 <tr>
                     <!-- Botón eliminar -->
                     <td>
                         <form action="/eliminar_equipo/{{ equipo[0] }}" method="POST" style="display: inline;">
-                            <button type="submit" class="small-delete">X</button>
+                            <button type="submit" class="small-delete" title="Eliminar equipo">X</button>
                         </form>
                     </td>
+
+                    <!-- Editar nombre del equipo -->
                     <td>
                         <form action="/editar_nombre" method="POST" style="display: inline;">
                             <input type="hidden" name="equipo_id" value="{{ equipo[0] }}">
                             <input type="text" name="nuevo_nombre" value="{{ equipo[1] }}" onblur="this.form.submit()" required>
                         </form>
                     </td>
+
+                    <!-- Yardas y puntos -->
                     <td>{{ equipo[2] }}</td>
                     <td>{{ equipo[3] }}</td>
+
+                    <!-- Sumar yardas -->
                     <td>
-                        <!-- Sumar yardas -->
                         <form action="/sumar" method="POST" style="display: inline;">
                             <input type="hidden" name="equipo_id" value="{{ equipo[0] }}">
-                            <input type="number" name="yardas" value="5" step="5" required>
-                            <button type="submit">Sumar</button>
+                            <input type="number" name="yardas" value="5" step="5" min="5" required>
+                            <button type="submit" title="Sumar yardas">Sumar</button>
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
+
                 <!-- Formulario para agregar equipo -->
                 <tr>
                     <td colspan="5">
                         <form action="/agregar_equipo" method="POST">
                             <input type="text" name="nombre_equipo" placeholder="Nombre del nuevo equipo" required>
-                            <button type="submit">Agregar Equipo</button>
+                            <button type="submit" title="Agregar nuevo equipo">Agregar Equipo</button>
                         </form>
                     </td>
                 </tr>
