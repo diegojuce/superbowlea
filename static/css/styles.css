@@ -15,9 +15,10 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  h1, h2 {
+  h1 {
     text-align: center;
     color: #333;
+    font-size: 1.8em;
   }
   
   table {
@@ -30,63 +31,59 @@ body {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
+    font-size: 14px;
   }
   
   table th {
     background-color: #007bff;
     color: white;
+    font-size: 16px;
   }
   
   table td {
     background-color: #f9f9f9;
   }
   
-  button {
+  button, .button-link {
     background-color: #007bff;
     color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  .button-link {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px 0;
-    text-align: center;
-    color: white;
-    background-color: #007bff;
-    border-radius: 4px;
     text-decoration: none;
-    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
   }
   
-  .button-link:hover {
+  button:hover, .button-link:hover {
     background-color: #0056b3;
   }
   
   .responsive-table {
     overflow-x: auto;
+    display: block;
   }
   
   @media (max-width: 768px) {
+    h1 {
+      font-size: 1.5em;
+    }
+  
     table th, table td {
-      font-size: 14px;
+      font-size: 12px;
       padding: 6px;
     }
   
-    button {
+    button, .button-link {
       font-size: 12px;
       padding: 6px 10px;
     }
   
-    h1, h2 {
-      font-size: 20px;
+    table th:nth-child(3), table td:nth-child(3),
+    table th:nth-child(4), table td:nth-child(4) {
+      display: none; /* Ocultar columnas Yardas y Puntos en móviles */
     }
   }
   
