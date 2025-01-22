@@ -11,10 +11,9 @@
     <h1>Superbowl EA 24-25</h1>
 
     <!-- Tabla de equipos -->
-    <table>
+    <table class="responsive-table">
       <thead>
         <tr>
-          <th>Eliminar</th>
           <th>Equipo</th>
           <th>Yardas</th>
           <th>Puntos</th>
@@ -22,15 +21,9 @@
         </tr>
       </thead>
       <tbody id="teams-body">
-        <!-- Datos dinámicos llenados con JavaScript -->
+        <!-- Se llenará dinámicamente con JavaScript -->
       </tbody>
     </table>
-
-    <!-- Formulario para agregar equipo -->
-    <form id="add-team-form">
-      <input type="text" name="nombre_equipo" placeholder="Nombre del nuevo equipo" required>
-      <button type="submit">Agregar Equipo</button>
-    </form>
 
     <!-- Enlace al historial -->
     <a href="/historial" class="historial-link">Ver historial</a>

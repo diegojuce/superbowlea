@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyTableBody = document.getElementById('history-body');
     const equipoSelects = document.querySelectorAll('#equipo-select');
   
-    // Cargar historial
+    // Cargar historial desde el servidor
     fetch('/api/historial')
       .then(response => response.json())
       .then(history => {

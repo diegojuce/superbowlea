@@ -45,6 +45,20 @@ const initDB = () => {
       FOREIGN KEY (equipo_id) REFERENCES equipos(id) ON DELETE CASCADE
     )
   `);
+
+  // Inserta 5 equipos si no existen
+  db.query(`SELECT COUNT(*) AS count FROM equipos`, (err, results) => {
+    if (err) {
+      console.error("Error inicializando la base de datos:", err);
+      return;
+    }
+    if (results[0].count === 0) {
+      const equipos = ["Equipo 1", "Equipo 2", "Equipo 3", "Equipo 4", "Equipo 5"];
+      equipos.forEach(nombre => {
+        db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre]);
+      });
+    }
+  });
 };
 initDB();
 
@@ -55,64 +69,13 @@ app.get('/', (req, res) => {
 
 // Obtener equipos
 app.get('/api/equipos', (req, res) => {
-  db.query(`SELECT * FROM equipos`, (err, equipos) => {
+  db.query(`SELECT * FROM equipos ORDER BY id ASC LIMIT 5`, (err, equipos) => {
     if (err) {
       console.error("Error obteniendo equipos:", err);
       res.status(500).json({ error: "Error al obtener equipos" });
     } else {
       res.json(equipos);
     }
-  });
-});
-
-// Ruta para agregar equipo
-app.post('/agregar_equipo', (req, res) => {
-  const { nombre_equipo } = req.body;
-
-  // Validar que el nombre del equipo no esté vacío
-  if (!nombre_equipo || nombre_equipo.trim() === '') {
-    res.status(400).send('El nombre del equipo no puede estar vacío.');
-    return;
-  }
-
-  // Insertar el equipo en la base de datos
-  db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre_equipo], (err) => {
-    if (err) {
-      console.error('Error agregando equipo:', err);
-      res.status(500).send('Error interno del servidor');
-      return;
-    }
-    res.status(200).send('Equipo agregado correctamente');
-  });
-});
-
-
-
-// Editar nombre
-app.post('/editar_nombre', (req, res) => {
-  const { equipo_id, nuevo_nombre } = req.body;
-
-  db.query(`UPDATE equipos SET nombre = ? WHERE id = ?`, [nuevo_nombre, equipo_id], (err) => {
-    if (err) {
-      console.error("Error actualizando nombre del equipo:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.redirect('/');
-  });
-});
-
-// Eliminar equipo
-app.post('/eliminar_equipo/:equipo_id', (req, res) => {
-  const { equipo_id } = req.params;
-
-  db.query(`DELETE FROM equipos WHERE id = ?`, [equipo_id], (err) => {
-    if (err) {
-      console.error("Error eliminando equipo:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.redirect('/');
   });
 });
 
@@ -175,7 +138,7 @@ app.get('/api/historial', (req, res) => {
   });
 });
 
-// Ruta de historial
+// Ruta del historial
 app.get('/historial', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));
 });
