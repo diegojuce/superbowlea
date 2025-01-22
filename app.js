@@ -23,9 +23,10 @@ const db = mysql.createPool({
 
 // Configurar middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
-// Inicializar la base de datos
+// Ruta para inicializar la base de datos
 const initDB = () => {
   db.query(`CREATE TABLE IF NOT EXISTS equipos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,19 +43,6 @@ const initDB = () => {
     fecha DATETIME,
     FOREIGN KEY (equipo_id) REFERENCES equipos(id) ON DELETE CASCADE
   )`);
-
-  db.query(`SELECT COUNT(*) AS count FROM equipos`, (err, results) => {
-    if (err) {
-      console.error("Error inicializando la base de datos:", err);
-      return;
-    }
-    if (results[0].count === 0) {
-      const equipos = ["Equipo 1", "Equipo 2", "Equipo 3", "Equipo 4", "Equipo 5"];
-      equipos.forEach(nombre => {
-        db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre]);
-      });
-    }
-  });
 };
 
 initDB();
@@ -68,6 +56,17 @@ app.get('/', (req, res) => {
       return;
     }
     res.sendFile(path.resolve(__dirname, 'templates', 'index.html'));
+  });
+});
+
+app.get('/api/equipos', (req, res) => {
+  db.query(`SELECT * FROM equipos`, (err, equipos) => {
+    if (err) {
+      console.error("Error obteniendo equipos:", err);
+      res.status(500).json({ error: "Error al obtener equipos" });
+    } else {
+      res.json(equipos);
+    }
   });
 });
 
@@ -112,20 +111,7 @@ app.post('/sumar', (req, res) => {
   });
 });
 
-// Rutas adicionales
-app.post('/editar_nombre', (req, res) => {
-  const { equipo_id, nuevo_nombre } = req.body;
-
-  db.query(`UPDATE equipos SET nombre = ? WHERE id = ?`, [nuevo_nombre, equipo_id], (err) => {
-    if (err) {
-      console.error("Error actualizando nombre del equipo:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.redirect('/');
-  });
-});
-
+// Ruta para agregar un nuevo equipo
 app.post('/agregar_equipo', (req, res) => {
   const { nombre_equipo } = req.body;
 
@@ -139,38 +125,20 @@ app.post('/agregar_equipo', (req, res) => {
   });
 });
 
-app.post('/eliminar_equipo/:equipo_id', (req, res) => {
-  const { equipo_id } = req.params;
-
-  db.query(`DELETE FROM equipos WHERE id = ?`, [equipo_id], (err) => {
-    if (err) {
-      console.error("Error eliminando equipo:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.redirect('/');
-  });
-});
-
+// Ruta para obtener historial
 app.get('/historial', (req, res) => {
-  db.query(`SELECT historial.fecha, equipos.nombre, historial.yardas, historial.puntos
-            FROM historial
-            INNER JOIN equipos ON historial.equipo_id = equipos.id
-            ORDER BY historial.fecha DESC`, (err, registros) => {
+  db.query(`
+    SELECT historial.fecha, equipos.nombre, historial.yardas, historial.puntos
+    FROM historial
+    INNER JOIN equipos ON historial.equipo_id = equipos.id
+    ORDER BY historial.fecha DESC
+  `, (err, registros) => {
     if (err) {
       console.error("Error obteniendo historial:", err);
       res.status(500).send("Error interno del servidor");
       return;
     }
-
-    db.query(`SELECT id, nombre FROM equipos`, (err, equipos) => {
-      if (err) {
-        console.error("Error obteniendo equipos:", err);
-        res.status(500).send("Error interno del servidor");
-        return;
-      }
-      res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));
-    });
+    res.json(registros);
   });
 });
 
