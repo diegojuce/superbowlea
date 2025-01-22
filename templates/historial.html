@@ -25,9 +25,27 @@
       </tbody>
     </table>
 
-    <!-- Volver a la página principal -->
-    <a href="/" class="volver">Volver</a>
-  </div>
-  <script src="/static/js/historial.js"></script>
-</body>
-</html>
+    <!-- Tabla para restar acciones -->
+    <h2>Acciones</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Equipo</th>
+          <th>Acción</th>
+          <th>Valor</th>
+          <th>Aplicar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Restar Yardas -->
+        <tr>
+          <form action="/restar_yardas" method="POST">
+            <td>
+              <select name="equipo_id" required>
+                <option value="" disabled selected>Seleccionar equipo</option>
+                <!-- Opciones llenadas dinámicamente -->
+              </select>
+            </td>
+            <td>Restar Yardas</td>
+            <td>
+             
