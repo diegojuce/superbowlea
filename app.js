@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
-// Ruta para inicializar la base de datos
+// Inicializar la base de datos
 const initDB = () => {
   db.query(`CREATE TABLE IF NOT EXISTS equipos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,18 +47,12 @@ const initDB = () => {
 
 initDB();
 
-// Rutas principales
+// Ruta principal
 app.get('/', (req, res) => {
-  db.query(`SELECT * FROM equipos`, (err, equipos) => {
-    if (err) {
-      console.error("Error obteniendo equipos:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.sendFile(path.resolve(__dirname, 'templates', 'index.html'));
-  });
+  res.sendFile(path.resolve(__dirname, 'templates', 'index.html'));
 });
 
+// API para obtener equipos
 app.get('/api/equipos', (req, res) => {
   db.query(`SELECT * FROM equipos`, (err, equipos) => {
     if (err) {
@@ -70,6 +64,7 @@ app.get('/api/equipos', (req, res) => {
   });
 });
 
+// Ruta para sumar yardas
 app.post('/sumar', (req, res) => {
   const { equipo_id, yardas } = req.body;
 
@@ -111,6 +106,20 @@ app.post('/sumar', (req, res) => {
   });
 });
 
+// Ruta para editar el nombre del equipo
+app.post('/editar_nombre', (req, res) => {
+  const { equipo_id, nuevo_nombre } = req.body;
+
+  db.query(`UPDATE equipos SET nombre = ? WHERE id = ?`, [nuevo_nombre, equipo_id], (err) => {
+    if (err) {
+      console.error("Error actualizando nombre del equipo:", err);
+      res.status(500).send("Error interno del servidor");
+      return;
+    }
+    res.redirect('/');
+  });
+});
+
 // Ruta para agregar un nuevo equipo
 app.post('/agregar_equipo', (req, res) => {
   const { nombre_equipo } = req.body;
@@ -125,8 +134,27 @@ app.post('/agregar_equipo', (req, res) => {
   });
 });
 
+// Ruta para eliminar un equipo
+app.post('/eliminar_equipo/:equipo_id', (req, res) => {
+  const { equipo_id } = req.params;
+
+  db.query(`DELETE FROM equipos WHERE id = ?`, [equipo_id], (err) => {
+    if (err) {
+      console.error("Error eliminando equipo:", err);
+      res.status(500).send("Error interno del servidor");
+      return;
+    }
+    res.redirect('/');
+  });
+});
+
 // Ruta para obtener historial
 app.get('/historial', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));
+});
+
+// API para obtener historial
+app.get('/api/historial', (req, res) => {
   db.query(`
     SELECT historial.fecha, equipos.nombre, historial.yardas, historial.puntos
     FROM historial
@@ -135,10 +163,10 @@ app.get('/historial', (req, res) => {
   `, (err, registros) => {
     if (err) {
       console.error("Error obteniendo historial:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
+      res.status(500).json({ error: "Error al obtener historial" });
+    } else {
+      res.json(registros);
     }
-    res.json(registros);
   });
 });
 
