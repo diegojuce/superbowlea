@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody id="history-body">
-        <!-- Los datos se llenarán dinámicamente con JavaScript -->
+        <!-- Datos dinámicos llenados con JavaScript -->
       </tbody>
     </table>
 
@@ -41,9 +41,8 @@
         <tr>
           <form action="/restar_yardas" method="POST">
             <td>
-              <select name="equipo_id" required>
+              <select name="equipo_id" id="equipo-select" required>
                 <option value="" disabled selected>Seleccionar equipo</option>
-                <!-- Opciones llenadas dinámicamente -->
               </select>
             </td>
             <td>Restar Yardas</td>
@@ -60,9 +59,8 @@
         <tr>
           <form action="/restar_puntos" method="POST">
             <td>
-              <select name="equipo_id" required>
+              <select name="equipo_id" id="equipo-select" required>
                 <option value="" disabled selected>Seleccionar equipo</option>
-                <!-- Opciones llenadas dinámicamente -->
               </select>
             </td>
             <td>Restar Puntos</td>

@@ -65,6 +65,48 @@ app.get('/api/equipos', (req, res) => {
   });
 });
 
+// Agregar equipo
+app.post('/agregar_equipo', (req, res) => {
+  const { nombre_equipo } = req.body;
+
+  db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre_equipo], (err) => {
+    if (err) {
+      console.error("Error agregando equipo:", err);
+      res.status(500).send("Error interno del servidor");
+      return;
+    }
+    res.redirect('/');
+  });
+});
+
+// Editar nombre
+app.post('/editar_nombre', (req, res) => {
+  const { equipo_id, nuevo_nombre } = req.body;
+
+  db.query(`UPDATE equipos SET nombre = ? WHERE id = ?`, [nuevo_nombre, equipo_id], (err) => {
+    if (err) {
+      console.error("Error actualizando nombre del equipo:", err);
+      res.status(500).send("Error interno del servidor");
+      return;
+    }
+    res.redirect('/');
+  });
+});
+
+// Eliminar equipo
+app.post('/eliminar_equipo/:equipo_id', (req, res) => {
+  const { equipo_id } = req.params;
+
+  db.query(`DELETE FROM equipos WHERE id = ?`, [equipo_id], (err) => {
+    if (err) {
+      console.error("Error eliminando equipo:", err);
+      res.status(500).send("Error interno del servidor");
+      return;
+    }
+    res.redirect('/');
+  });
+});
+
 // Sumar yardas
 app.post('/sumar', (req, res) => {
   const { equipo_id, yardas } = req.body;
@@ -107,53 +149,7 @@ app.post('/sumar', (req, res) => {
   });
 });
 
-// Editar nombre
-app.post('/editar_nombre', (req, res) => {
-  const { equipo_id, nuevo_nombre } = req.body;
-
-  db.query(`UPDATE equipos SET nombre = ? WHERE id = ?`, [nuevo_nombre, equipo_id], (err) => {
-    if (err) {
-      console.error("Error actualizando nombre del equipo:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.redirect('/');
-  });
-});
-
-// Agregar equipo
-app.post('/agregar_equipo', (req, res) => {
-  const { nombre_equipo } = req.body;
-
-  db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre_equipo], (err) => {
-    if (err) {
-      console.error("Error agregando equipo:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.redirect('/');
-  });
-});
-
-// Eliminar equipo
-app.post('/eliminar_equipo/:equipo_id', (req, res) => {
-  const { equipo_id } = req.params;
-
-  db.query(`DELETE FROM equipos WHERE id = ?`, [equipo_id], (err) => {
-    if (err) {
-      console.error("Error eliminando equipo:", err);
-      res.status(500).send("Error interno del servidor");
-      return;
-    }
-    res.redirect('/');
-  });
-});
-
-// Historial
-app.get('/historial', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));
-});
-
+// Obtener historial
 app.get('/api/historial', (req, res) => {
   db.query(`
     SELECT historial.fecha, equipos.nombre, historial.yardas, historial.puntos
@@ -168,6 +164,11 @@ app.get('/api/historial', (req, res) => {
       res.json(registros);
     }
   });
+});
+
+// Ruta de historial
+app.get('/historial', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'templates', 'historial.html'));
 });
 
 // Restar yardas
@@ -198,7 +199,7 @@ app.post('/restar_yardas', (req, res) => {
             res.status(500).send("Error interno del servidor");
             return;
           }
-          res.redirect('/');
+          res.redirect('/historial');
         });
     });
   });
@@ -232,7 +233,7 @@ app.post('/restar_puntos', (req, res) => {
             res.status(500).send("Error interno del servidor");
             return;
           }
-          res.redirect('/');
+          res.redirect('/historial');
         });
     });
   });
