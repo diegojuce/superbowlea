@@ -25,10 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <form action="/sumar" method="POST">
                   <input type="hidden" name="equipo_id" value="${team.id}">
                   <input type="number" name="yardas" value="5" step="5" required>
+                  <button type="submit">Aplicar</button>
                 </form>
-              </td>
-              <td>
-                <button type="submit">Aplicar</button>
               </td>
             </tr>
           `).join('');
