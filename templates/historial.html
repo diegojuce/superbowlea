@@ -25,7 +25,7 @@
       </tbody>
     </table>
 
-    <!-- Tabla para restar acciones -->
+    <!-- Tabla para restar yardas y puntos -->
     <h2>Acciones</h2>
     <table>
       <thead>
@@ -48,4 +48,38 @@
             </td>
             <td>Restar Yardas</td>
             <td>
-             
+              <input type="number" name="yardas" value="5" step="5" min="0" required>
+            </td>
+            <td>
+              <button type="submit">Aplicar</button>
+            </td>
+          </form>
+        </tr>
+
+        <!-- Restar Puntos -->
+        <tr>
+          <form action="/restar_puntos" method="POST">
+            <td>
+              <select name="equipo_id" required>
+                <option value="" disabled selected>Seleccionar equipo</option>
+                <!-- Opciones llenadas dinámicamente -->
+              </select>
+            </td>
+            <td>Restar Puntos</td>
+            <td>
+              <input type="number" name="puntos" value="7" step="7" min="0" required>
+            </td>
+            <td>
+              <button type="submit">Aplicar</button>
+            </td>
+          </form>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Volver a la página principal -->
+    <a href="/" class="volver">Volver</a>
+  </div>
+  <script src="/static/js/historial.js"></script>
+</body>
+</html>

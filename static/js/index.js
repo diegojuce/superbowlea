@@ -13,7 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button type="submit" class="small-delete">X</button>
               </form>
             </td>
-            <td>${team.nombre}</td>
+            <td>
+              <form action="/editar_nombre" method="POST">
+                <input type="hidden" name="equipo_id" value="${team.id}">
+                <input type="text" name="nuevo_nombre" value="${team.nombre}" onblur="this.form.submit()" required>
+              </form>
+            </td>
             <td>${team.yardas}</td>
             <td>${team.puntos}</td>
             <td>

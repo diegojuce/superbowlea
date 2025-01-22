@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyTableBody = document.getElementById('history-body');
   
     // Cargar historial desde el servidor
-    fetch('/historial')
+    fetch('/api/historial')
       .then(response => response.json())
       .then(history => {
         historyTableBody.innerHTML = history.map(entry => `
