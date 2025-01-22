@@ -65,10 +65,17 @@ app.get('/api/equipos', (req, res) => {
   });
 });
 
-// Agregar equipo
+// Ruta para agregar un nuevo equipo
 app.post('/agregar_equipo', (req, res) => {
   const { nombre_equipo } = req.body;
 
+  // Validar que el nombre del equipo no esté vacío
+  if (!nombre_equipo || nombre_equipo.trim() === '') {
+    res.status(400).send('El nombre del equipo no puede estar vacío.');
+    return;
+  }
+
+  // Insertar equipo en la base de datos
   db.query(`INSERT INTO equipos (nombre) VALUES (?)`, [nombre_equipo], (err) => {
     if (err) {
       console.error("Error agregando equipo:", err);
@@ -78,6 +85,7 @@ app.post('/agregar_equipo', (req, res) => {
     res.redirect('/');
   });
 });
+
 
 // Editar nombre
 app.post('/editar_nombre', (req, res) => {
