@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <td>${team.nombre}</td>
               <td>Sumar Yardas</td>
               <td>
-                <form action="/sumar" method="POST">
+                <form action="/sumar" method="POST" style="display: inline;">
                   <input type="hidden" name="equipo_id" value="${team.id}">
                   <input type="number" name="yardas" value="5" step="5" required>
                   <button type="submit">Aplicar</button>
